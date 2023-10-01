@@ -1,0 +1,47 @@
+﻿@model Sale
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="row">
+    <div class="col-12">
+        <form asp-action="Edit" asp-controller="Sales" method="post">
+            <h3>Edit sales</h3>
+            <input type="hidden" asp-for="SaleId" />
+            <input type="hidden" asp-for="ProductId" />
+            <div class="form-group row mb-1">
+                <label class="col-form-label col-2" asp-for="Date"></label>
+                <div class="col-6">
+                    <input type="date" asp-for="Date" class="form-control" />
+                    <span asp-validation-for="Date" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                <label class="col-form-label col-2" asp-for="Product"></label>
+                <div class="col-6">
+                    <span class="ms-1">@Model.Product?.ProductName</span>
+                    <span asp-validation-for="ProductId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                <label class="col-form-label col-2" asp-for="Quantity"></label>
+                <div class="col-6">
+                    <input asp-for="Quantity" class="form-control" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+
+                <div class="col-6 offset-2">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts
+    {
+    <script src="~/libs/jquery/jquery.js"></script>
+    <script src="~/libs/jquery-validate/jquery.validate.js"></script>
+    <script src="~/libs/jquery-validate/jquery.validate.unobtrusive.js"></script>
+}

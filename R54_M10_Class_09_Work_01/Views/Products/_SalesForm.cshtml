@@ -1,0 +1,14 @@
+﻿@model Sale
+<tr>
+    <td>
+        <input type="date" asp-for="Date" class="form-control form-control-sm" />
+        <span class="text-danger" asp-validation-for="Date"></span>
+    </td>
+    <td>
+        <input type="text" asp-for="Quantity" class="form-control form-control-sm" />
+        <span class="text-danger" asp-validation-for="Quantity"></span>
+    </td>
+    <td>
+        <button type="button" class="btn btn-danger btn-sm del">Remove</button>
+    </td>
+</tr>

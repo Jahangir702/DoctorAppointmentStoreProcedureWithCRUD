@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/libs/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <script src="~/libs/bootstrap/js/bootstrap.bundle.js"></script>
+    @await RenderSectionAsync("styles", false)
+</head>
+<body>
+
+    <ul class="nav justify-content-end py-3 px-2 border-bottom" >
+        <li class="nav-item me-auto">
+            <strong>Evidence</strong>
+        </li>
+        <li>
+            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+        </li>
+        <li>
+            <a class="nav-link" asp-controller="Products" asp-action="Aggregates">Aggregates</a>
+        </li>
+        <li>
+            <a class="nav-link" asp-controller="Products" asp-action="Grouping">Grouping</a>
+        </li>
+        <li>
+            <a class="nav-link" asp-controller="Products" asp-action="Index">CRUD</a>
+        </li>
+    </ul>
+
+    <div class="container">
+    @RenderBody()
+    </div>
+    @await RenderSectionAsync("scripts", false)
+</body>
+</html>

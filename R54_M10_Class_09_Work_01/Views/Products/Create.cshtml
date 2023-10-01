@@ -1,0 +1,162 @@
+﻿@model ProductInputModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h3>Add New Product</h3>
+        <form id="frm" method="post" asp-action="Create" asp-controller="Products">
+            <div class="form-group row mb-1">
+                <label asp-for="ProductName" class="col-form-label col-2"></label>
+                <div class="col-6">
+                    <input asp-for="ProductName" class="form-control" />
+                    <span asp-validation-for="ProductName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                <label asp-for="Size" class="col-form-label col-2"></label>
+                <div class="col-6">
+                    <select asp-for="Size" class="form-select" asp-items="@Html.GetEnumSelectList<Size>()">
+                        <option value="" selected>Select one</option>
+                    </select>
+                    <span asp-validation-for="Size" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                <label asp-for="Price" class="col-form-label col-2"></label>
+                <div class="col-6">
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+                <label asp-for="Picture" class="col-form-label col-2"></label>
+                <div class="col-6">
+                    <input type="file" asp-for="Picture" class="form-control" />
+                    <span asp-validation-for="Picture" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+
+                <div class="col-6 offset-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="OnSale">
+                        <label class="form-check-label">
+                            On sale?
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+
+                <div class="col-8">
+                    <h4>Sales</h4>
+                  <table class="table table-bordered">
+                      <thead>
+                          <tr>
+                              <th>Date</th>
+                              <th>Quantity</th>
+                              <th>
+                                  <button type="button" class="btn btn-outline-primary btn-sm" id="add">Add</button>
+                              </th>
+                          </tr>
+                      </thead>
+                      <tbody id="tbody">
+
+                      </tbody>
+                  </table>
+
+                </div>
+            </div>
+            <div class="form-group row mb-1">
+
+                <div class="col-8 text-end">
+                    <button type="button" class="btn btn-primary" id="save">Save</button>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/libs/jquery/jquery.js"></script>
+    <script src="~/libs/validate/jquery.validate.js"></script>
+    <script src="~/libs/validate/jquery.validate.unobtrusive.js"></script>
+    <script>
+        addSalesForm();
+        $("#add").click(() => {
+            addSalesForm();
+        });
+        $(document).on("click", "button.del", function () {
+            $(this).closest("tr").remove();
+        });
+        $("#save").click(() => {
+            if (!$("#frm").valid()) return;
+            var data = {
+                ProductName: $("#ProductName").val(),
+                Price: $("#Price").val(),
+                Size: $("#Size").val(),
+                OnSale: document.getElementById("OnSale").checked,
+                Picture:'',
+                Sales: []
+            };
+            var dates = $("input[name=Date]");
+           
+            var quantities = $("input[name=Quantity]");
+            for (var i = 0; i < dates.length;i++)
+            {
+                data.Sales.push({ Date: $(dates[i]).val(), Quantity: $(quantities[i]).val() });
+            }
+            
+            if (document.getElementById("Picture").files.length > 0) {
+                var f = document.getElementById("Picture").files[0]
+                var formData = new FormData();
+                formData.append("file", f);
+                $.ajax({
+                    url: '/Products/Upload',
+                    type: 'POST',
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: (r) => {
+                        
+                        data.Picture = r.name;
+                        saveData(data)
+                    }
+                });
+
+            }
+        })
+        function saveData(x){
+            console.log(x);
+            $.ajax({
+                type: "post",
+                url: "/Products/Create",
+                data: {model:x},
+                dataType: "json",
+                success: r => {
+                    console.log(r);
+                    if(r.success== true){
+                        window.location.href = "/Products/Index";
+                    }
+                }
+            })
+        }
+        function addSalesForm() { 
+            $.ajax({
+                type:"get",
+                url: "/Products/GetSalesForm",
+                success: r => {
+                    $("#tbody").append(r);
+                    $("#frm").removeData("validator").removeData("unobtrusiveValidation");
+                    $.validator.unobtrusive.parse($("#frm"));
+                }
+            });
+        }
+    </script>
+}
+
